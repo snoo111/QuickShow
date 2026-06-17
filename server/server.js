@@ -21,6 +21,7 @@ app.use(cors())
 app.use(clerkMiddleware())
 
 
+
 //API Routes
 app.get('/', (req, res) => 
     res.send('Server is live!'))
