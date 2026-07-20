@@ -126,7 +126,7 @@ app.use(cors())  // ✅ allow all origins
 app.use(clerkMiddleware())
 
 app.get('/', (req, res) => res.send('Server is live!'))
-app.use('/api/inngest', serve({ client: inngest, functions }))  // ✅ only one, no manual signingKey
+app.use('/api/inngest', serve({ client: inngest, functions, signingKey:process.env.INNGEST_SIGNING_KEY }))  // ✅ only one, no manual signingKey
 app.use('/api/show', showRouter)
 app.use('/api/booking', bookingRouter)
 app.use('/api/admin', adminRouter)
