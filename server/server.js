@@ -103,6 +103,7 @@
 
 
 import 'dotenv/config';
+console.log("INNGEST_SIGNING_KEY:", process.env.INNGEST_SIGNING_KEY?.substring(0, 20))
 import express from 'express';
 import cors from 'cors';
 import connectDB from './config/db.js';
