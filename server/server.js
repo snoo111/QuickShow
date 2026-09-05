@@ -103,7 +103,9 @@
 
 
 import 'dotenv/config';
-console.log("INNGEST_SIGNING_KEY:", process.env.INNGEST_SIGNING_KEY?.substring(0, 20))
+console.log("Inngest event key exists:", !!process.env.INNGEST_EVENT_KEY);
+console.log("Inngest signing key exists:", !!process.env.INNGEST_SIGNING_KEY);
+
 import express from 'express';
 import cors from 'cors';
 import connectDB from './config/db.js';
@@ -130,11 +132,42 @@ app.use(cors())  // ✅ allow all origins
 app.use(clerkMiddleware())
 
 app.get('/', (req, res) => res.send('Server is live!'))
-app.use('/api/inngest', serve({ client: inngest, functions, signingKey:process.env.INNGEST_SIGNING_KEY,  serveHost: 'https://quickshow-server-peach-nine.vercel.app',
-    servePath: '/api/inngest' }))  // ✅ only one, no manual signingKey
+app.use('/api/inngest', serve({ client: inngest, functions, signingKey:process.env.INNGEST_SIGNING_KEY
+  }))  // ✅ only one, no manual signingKey
 app.use('/api/show', showRouter)
 app.use('/api/booking', bookingRouter)
 app.use('/api/admin', adminRouter)
 app.use('/api/user', userRouter)
+
+app.get('/api/test-inngest', async (req, res) => {
+    try {
+        console.log("Testing Inngest connection...");
+
+        await inngest.send({
+            name: "app/checkpayment",
+            data: {
+                bookingId: "test"
+            }
+        });
+
+        console.log("✅ Inngest connection works!");
+
+        res.json({
+            success: true,
+            message: "Inngest event sent successfully"
+        });
+
+    } catch (error) {
+        console.log("❌ Inngest test failed");
+        console.log("Message:", error.message);
+        console.log("Cause:", error.cause);
+        console.log("Stack:", error.stack);
+
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+});
 
 app.listen(port, () => console.log(`Server listening at http://localhost:${port}`))
