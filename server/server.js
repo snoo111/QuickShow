@@ -116,10 +116,14 @@ import adminRouter from './routes/adminRoutes.js';
 import userRouter from './routes/userRoutes.js';
 import User from './models/User.js'
 
+
 const app = express();
 const port = 3000;
 
 await connectDB()
+
+//Stripe Webhooks route
+app.use('/api/booking/stripe-webhook', express.raw({type: 'application/json'})) // Use raw body for Stripe webhooks
 
 app.use(express.json())
 app.use(cors())  // ✅ allow all origins

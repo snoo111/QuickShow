@@ -1,23 +1,27 @@
 import { useEffect, useState } from "react";
-import { dummyShowsData } from "../../assets/assets";
+
 import Loading from "../../components/Loading";
 import Title from "../../components/admin/Title";
 import { CheckIcon, DeleteIcon, StarIcon } from "lucide-react";
 import { kConverter } from "../../lib/kConverter";
 import { useAppContext } from "../../context/AppContext";
+import toast from 'react-hot-toast';
 
 
 const AddShows = () => {
 
   const{ axios, getToken, user, image_base_url} = useAppContext()
   const currency = import.meta.env.VITE_CURRENCY
+  
 
   const[nowPlayingMovies, setNowPlayingMovies] = useState([]);
   const[selectedMovie, setSelectedMovie] = useState(null);
   const[dateTimeSelection, setDateTimeSelection] = useState({});
   const[dateTimeInput, setDateTimeInput] = useState("");
   const[showPrice, setShowPrice] = useState("");
-  const [addingShow, setAddingShow] = useState(false);
+  const [addingShow, setAddingShow] = useState(false)
+
+  console.log("nowPlayingMovies:", nowPlayingMovies.length)
 
 const fetchNowPlayingMovies = async()=>{
  try{
@@ -61,7 +65,7 @@ const handleRemoveTime = (date, time) => {
 
 const handleSubmit = async()=>{
   try{
-    setAddingShow(true);
+    setAddingShow(true)
     
     if(!selectedMovie || Object.keys(dateTimeSelection).length === 0 || !showPrice){
       return toast('Missing required fields');
@@ -89,9 +93,10 @@ const handleSubmit = async()=>{
   }catch(error){
     console.error("Submission error:", error);
     toast.error('An error occured. Please try again.')
+    console.error("Error message:", error.message)
 
   }
-  setAddingShow(false);
+  setAddingShow(false)
 }
 
 useEffect(()=>{

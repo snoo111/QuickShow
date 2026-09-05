@@ -3,25 +3,22 @@ import { dummyShowsData } from "../../assets/assets";
 import Loading from "../../components/Loading";
 import Title from "../../components/admin/Title";
 import { dateFormat } from "../../lib/dateFormat";
+import { useAppContext } from "../../context/AppContext";
 
 
 export const ListShows = () => {
   const currency = import.meta.env.VITE_CURRENCY
+
+ const{ axios, getToken, user} = useAppContext()
+
+
   const[shows, setShows] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const getAllShows = async()=>{
     try{
-      setShows([{
-        movie:dummyShowsData[0],
-        showDateTime:"2026-06-30T02:30:00.OOOZ",
-        showPrice: 59,
-        occupiedSeats:{
-          A1:"user_1",
-          B1:"user_2",
-          C1:"user_3",
-        }
-      }]);
+     const {data} = await axios.get("/api/admin/all-shows",{headers:{Authorization:`Bearer ${await getToken()}` }});
+     setShows(data.shows);
       setLoading(false);
     }catch(error){
       console.error("Error fetching shows:", error);
@@ -29,7 +26,9 @@ export const ListShows = () => {
   }
 
   useEffect(() =>{
-    getAllShows();
+    if(user){
+       getAllShows();
+    }
   },[]);
 
   return !loading ?(

@@ -36,17 +36,17 @@ const Dashboard = () => {
     try {
       const token = await getToken();
       
-      const { data } = await axios.get('/api/admin/dashboard', {
+      const { data } = await axios.get("/api/admin/dashboard", {
         headers: {
           Authorization: `Bearer ${token}`
         }
       })
       if (data.success) {
         setDashboardData(data.dashboardData)
-        toast.error(data.message)
-      }
+        setLoading(false)
+      }else{toast.error(data.message)}
     } catch (error) {
-      console.error("error fetching dashboard data:", error);
+      toast.error("error fetching dashboard data:", error);
     }finally{
       setLoading(false)
     }
